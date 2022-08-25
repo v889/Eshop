@@ -16,5 +16,6 @@ admin.site.register(Product,ProductView)
 admin.site.register(Category,CategoryView)
 admin.site.register(Customer)
 admin.site.register(Order)
+admin.site.register(Status)
 
 # Register your models here.

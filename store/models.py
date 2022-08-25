@@ -56,8 +56,13 @@ class Customer(models.Model):
         if Customer.objects.filter(email=self.email):
             return True
         return False
+class Status(models.Model):
+    name=models.CharField(max_length=50)
+    def __str__(self):
+        return self.name
 
 class Order(models.Model):
+
     product = models.ForeignKey(Product,
                                 on_delete=models.CASCADE)
     customer = models.ForeignKey(Customer,
@@ -67,7 +72,11 @@ class Order(models.Model):
     address = models.CharField(max_length=50, default='', blank=True)
     phone = models.CharField(max_length=50, default='', blank=True)
     date = models.DateField(default=datetime.datetime.today)
-    status = models.BooleanField(default=False)
+    status = models.ForeignKey(Status,on_delete=models.CASCADE,default=None,null=True)
+    city = models.CharField(max_length=200, null=False)
+    state = models.CharField(max_length=200, null=False)
+    zipcode = models.CharField(max_length=200, null=False)
+    date_added = models.DateTimeField(auto_now_add=True)
 
     def placeOrder(self):
         self.save()
@@ -76,17 +85,18 @@ class Order(models.Model):
     def get_orders_by_customer(customer_id):
         return Order.objects.filter(customer=customer_id).order_by('-date')
 
-class Transaction(models.Model):
-    made_by = models.ForeignKey(Customer, related_name='transactions',
-                                on_delete=models.CASCADE)
-    made_on = models.DateTimeField(auto_now_add=True)
-    amount = models.IntegerField()
-    order_id = models.CharField(unique=True, max_length=100, null=True, blank=True)
-    checksum = models.CharField(max_length=100, null=True, blank=True)
+class OrderItem(models.Model):
+	product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+	order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+	quantity = models.IntegerField(default=0, null=True, blank=True)
+	date_added = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        if self.order_id is None and self.made_on and self.id:
-            self.order_id = self.made_on.strftime('PAY2ME%Y%m%dODR') + str(self.id)
-        return super().save(*args, **kwargs)
+	@property
+	def get_total(self):
+		total = self.product.price * self.quantity
+		return total
+
+
+
 
 

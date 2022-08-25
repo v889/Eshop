@@ -127,3 +127,4 @@ STATICFILES_DIRS = (
 )
 MEDIA_URL='/abcd/'
 MEDIA_ROOT=BASE_DIR
+TIME_ZONE =  'Asia/Kolkata'

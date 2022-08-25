@@ -3,6 +3,8 @@ from django.contrib.auth.hashers import make_password , check_password
 from django.views import View
 from store.models import *
 from django.contrib import messages
+
+# Create your views here.
 class Index(View):
 
     def post(self , request):
@@ -164,11 +166,16 @@ class CheckOut(View):
     def post(self, request):
         address = request.POST.get('address')
         phone = request.POST.get('phone')
+        city=request.POST.get('city')
+        state=request.POST.get('state')
+        zipcode=request.POST.get('zipcode')
         customer = request.session.get('customer')
         cart = request.session.get('cart')
         products = Product.get_products_by_id(list(cart.keys()))
         print(address, phone, customer, cart, products)
         customer=Customer.objects.get(id=customer)
+        status=Status.objects.all()
+        status=status[0]
 
         for product in products:
             print(cart.get(str(product.id)))
@@ -177,9 +184,17 @@ class CheckOut(View):
                           price=product.price,
                           address=address,
                           phone=phone,
-                          quantity=cart.get(str(product.id)))
+                          quantity=cart.get(str(product.id)),
+                          city=city,
+                          state=state,
+                          zipcode=zipcode,
+                          status=status
+                          )
             order.save()
+
+
         request.session['cart'] = {}
+        messages.success(request,"Your order will be delivered soon")
         return redirect('cart')
 
 
@@ -189,4 +204,18 @@ class Cart(View):
         products = Product.get_products_by_id(ids)
         print(products)
         return render(request, 'cart.html', {'products': products})
+
+
+class demo(View):
+    def get(self, request):
+        ids = list(request.session.get('cart').keys())
+        products = Product.get_products_by_id(ids)
+        if (len(products) == 0):
+            messages.info(request, "Please add some Product")
+            return redirect('cart')
+        print(products)
+        n=len(products)
+        return render(request, 'checkout.html', {'items': products,'n':n})
+
+
 
