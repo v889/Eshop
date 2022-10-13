@@ -1,6 +1,6 @@
 from django.db import models
 import datetime
-
+from django.utils.html import mark_safe
 
 class Category(models.Model):
     name=models.CharField(max_length=20)
@@ -19,7 +19,6 @@ class Product(models.Model):
     price =models.IntegerField(default=0)
     category=models.ForeignKey(Category,on_delete=models.CASCADE,default=1)
     description=models.CharField(max_length=280,default='')
-    image=models.ImageField(upload_to='products/')
 
     @staticmethod
     def get_products_by_id(ids):
@@ -35,6 +34,15 @@ class Product(models.Model):
             return Product.objects.filter(category=category_id)
         else:
             return Product.get_all_products();
+class ProductImage(models.Model):
+    image = models.ImageField(null=True, blank=True)  # ,upload_to="news/images"
+    product= models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True,
+                               related_name="product_image_model")
+
+    def image_tag(self):
+        return mark_safe('<img src="%s" width="150" height="150" />' % (self.image.url))
+
+    image_tag.short_description = 'Image Preview'
 
 class Customer(models.Model):
     first_name=models.CharField(max_length=50)
@@ -95,7 +103,6 @@ class OrderItem(models.Model):
 	def get_total(self):
 		total = self.product.price * self.quantity
 		return total
-
 
 
 

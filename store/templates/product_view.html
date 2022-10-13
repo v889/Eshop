@@ -1,0 +1,93 @@
+
+{% extends 'base.html' %}
+
+
+{% block content %}
+{% load cart %}
+{% load custom_filter %}
+ <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- News Detail Start -->
+                <div class="position-relative mb-3">
+                    <!-- carousel start -->
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            <ol class="carousel-indicators">
+                                {% for p in product_images  %}
+                                <li data-target="#carouselExampleIndicators" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.counter0 == 0 %} active {% endif %}"></li>
+                                {%endfor%}
+                            </ol>
+                            {% for p in product_images %}
+                            <div class="carousel-item {% if forloop.counter0 == 0 %} active {% endif %}">
+                                <img class="d-block img-fluid w-100" src="{{p.image.url }}"
+                                 alt="First slide"   style="object-fit: cover;">
+                            </div>
+                            {% endfor %}
+
+                            <!-- NEEDED: DONT REMOVE THIS -->
+
+                            <!-- previous -->
+                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                                data-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <!-- forward -->
+                            <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                                data-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>
+
+                        </div>
+                    </div>
+                    <!-- carousel end -->
+
+                    <div class="bg-white border border-top-0 p-4">
+                        <div class="mb-3">
+                            <span class="badge badge-primary text-uppercase font-weight-semi-bold p-2 mr-2"
+                                href="">{{product.category}}</span>
+                        </div>
+                        <h1 class="mb-3 text-secondary text-uppercase font-weight-bold">{{product.name}}</h1>
+                        <p>Product Price: {{product.price|currency}}</p>
+
+                        <p>{{product.description}}</p>
+                        <div class="card-footer p-0 no-gutters">
+
+						{% if product|is_in_cart:request.session.cart %}
+						<div class="row no-gutters">
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<input hidden type="text" name='remove' value='True'>
+								<input type="submit" value=" - " class="btn btn-block btn-light border-right">
+							</form>
+							<div class="text-center col">{{product|cart_quantity:request.session.cart}} in Cart</div>
+							<form action="/#{{product.id}}" class="col-2 " method="post">
+								{% csrf_token %}
+								<input hidden type="text" name='product' value='{{product.id}}'>
+								<input type="submit" value=" + " class="btn btn-block btn-light border-left">
+							</form>
+						</div>
+						{% else %}
+						<form action="/#{{product.id}}" method="POST" class="btn-block">
+							{% csrf_token %}
+							<input hidden type="text" name='product' value='{{product.id}}'>
+							<input type="submit" class="float-right btn btn-light  form-control"
+								value="Add To Cart">
+						</form>
+						{% endif %}
+
+                    </div>
+
+
+                    </div>
+                </div>
+                <!-- News Detail End -->
+
+
+            </div>
+        </div>
+ </div>
+{% endblock %}

@@ -11,5 +11,6 @@ urlpatterns= [
     path('check-out/', views.CheckOut.as_view() , name='checkout'),
     path('check/',views.demo.as_view(),name='check'),
     path('orders/', auth_middleware(views.OrderView.as_view()), name='orders'),
+    path("product/<int:id>", views.Product_view, name="product_details"),
 
 ]

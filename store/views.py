@@ -218,4 +218,9 @@ class demo(View):
         return render(request, 'checkout.html', {'items': products,'n':n})
 
 
+def Product_view(request,id):
+    product = Product.objects.get(pk=id)
+    product_images = product.product_image_model.all()
 
+    context = {'product':product,'product_images':product_images}
+    return render(request, 'product_view.html', context)

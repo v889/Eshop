@@ -26,8 +26,8 @@
                 {% for order in orders %}
                 <tr>
                     <td>{{forloop.counter}}</td>
-                    <td><img style="height: 80px;" class="rounded-circle" src="{{order.product.image.url}}" alt=""></td>
-                    <td>{{order.product.name}}</td>
+                    <td><a href="{% url 'product_details' order.product.id %}"><img style="height: 80px;" class="rounded-circle" src="{{order.product.product_image_model.first.image.url}}" alt=""></a></td>
+                    <td><a href="{% url 'product_details' order.product.id %}">{{order.product.name}}</a></td>
                     <td>{{order.date}}</td>
                     <td>{{order.price|currency}}</td>
                     <td>{{order.quantity}}</td>

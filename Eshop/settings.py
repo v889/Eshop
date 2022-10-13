@@ -125,6 +125,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-MEDIA_URL='/abcd/'
-MEDIA_ROOT=BASE_DIR
+MEDIA_ROOT=os.path.join(BASE_DIR,'products')
+MEDIA_URL = '/products/'
 TIME_ZONE =  'Asia/Kolkata'

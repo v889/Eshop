@@ -34,8 +34,8 @@
                 {% for product in products %}
                 <tr>
                     <td>{{forloop.counter}}</td>
-                    <td><img style="height: 80px;" class="rounded-circle" src="{{product.image.url}}" alt=""></td>
-                    <td>{{product.name}}</td>
+                    <td><a href="{% url 'product_details' product.id %}"><img style="height: 80px;" class="rounded-circle" src="{{product.product_image_model.first.image.url}}" alt=""></a></td>
+                    <td><a href="{% url 'product_details' product.id %}">{{product.name}}</a></td>
                     <td>{{product.price|currency}}</td>
                     <td>
                     <form action="/#{{product.id}}" class="col-2 " method="post">
