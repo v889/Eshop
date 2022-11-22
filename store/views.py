@@ -70,7 +70,7 @@ class Login(View):
         customer=customer[0]
         error_message = None
         if customer:
-            flag =(password==customer.password)
+            flag =check_password(password==customer.password)
             if flag:
                 request.session['customer'] = customer.id
 
